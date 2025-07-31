@@ -4,7 +4,7 @@ import pages from "./pages";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/media-test">
       <Routes>
         <Route path="/" element={<MainPage />} />
         {pages.map((page) => (
