@@ -4,10 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>📸 Media Test</title>
-    <script type="module" crossorigin src="/media-test/assets/index-Cmy2yMgu.js"></script>
-    <link rel="stylesheet" crossorigin href="/media-test/assets/index-B5MK5Nug.css">
+    <script type="text/javascript">
+      // GitHub Pages SPA 라우팅을 위한 리다이렉트 처리
+      // 404.html에서 리다이렉트된 URL을 올바른 라우팅 경로로 복원
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
+    <script type="module" crossorigin src="/media-test/assets/index-D8ANhpTG.js"></script>
+    <link rel="stylesheet" crossorigin href="/media-test/assets/index-5J1MkJH1.css">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
   </body>
 </html>
