@@ -42,7 +42,9 @@ function VirtualBgSet() {
           />
         ))}
       </div>
-      {!!camError && <p className="typo-2xs600 mt-[4px] pl-[4px] text-red-500">{t("camera_required_for_selection")}</p>}
+      {!!camError && (
+        <p className="typo-2xs600 mt-[4px] pl-[4px] text-red-500">카메라가 정상 작동해야 선택할 수 있습니다.</p>
+      )}
     </div>
   );
 }

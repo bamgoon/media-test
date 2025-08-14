@@ -1,13 +1,9 @@
-import { useTranslation } from "react-i18next";
-
 import { ChangeEvent } from "react";
 
 import { Option, Select, Switch } from "@/components";
 import { useDeviceActions, useDeviceStore } from "@stores";
 
 function CameraSet() {
-  const { t } = useTranslation();
-
   const isCamOn = useDeviceStore((store) => store.isCamOn);
   const camError = useDeviceStore((store) => store.camError);
   const cams = useDeviceStore((store) => store.cams);
@@ -25,19 +21,19 @@ function CameraSet() {
   const errorMessage = () => {
     switch (camError?.name) {
       case "NotFoundError":
-        return t("camera_not_found");
+        return camError.message;
       case "OverconstrainedError":
-        return t("camera_unavailable");
+        return camError.message;
       case "NotAllowedError":
         if (camError.message === "Permission denied") {
-          return t("camera_browser_perm_denied");
+          return camError.message;
         } else if (camError.message === "Permission denied by system") {
-          return t("camera_system_perm_denied");
+          return camError.message;
         } else {
-          return t("camera_perm_denied");
+          return camError.message;
         }
       case "NotReadableError":
-        return t("camera_in_use");
+        return camError.message;
       default:
         return `${camError?.name}: ${camError?.message}`;
     }
@@ -46,7 +42,7 @@ function CameraSet() {
   return (
     <div>
       <div className="flex justify-between">
-        <p className="typo-xs600">{t("camera")}</p>
+        <p className="typo-xs600">카메라</p>
         <Switch checked={isCamOn} onChange={handleCamToggle} />
       </div>
       <Select
@@ -57,7 +53,7 @@ function CameraSet() {
         error={!!camError}
         disabled={cams.length === 0}
       >
-        {cams.length === 0 && <Option value="" label={t("camera_cannot_use")} disabled />}
+        {cams.length === 0 && <Option value="" label="카메라를 사용할 수 없습니다." disabled />}
         {cams.map((cam) => (
           <Option key={cam.deviceId} value={cam.deviceId} label={cam.label} />
         ))}

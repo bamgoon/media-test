@@ -1,5 +1,3 @@
-import { useTranslation } from "react-i18next";
-
 import { useEffect, useMemo } from "react";
 
 import DeviceTestPage2 from "@components/debate-room/DeviceTestPage2";
@@ -43,7 +41,6 @@ function DebatePage() {
   const isVirtualBgOn = useDeviceStore((store) => store.isVirtualBgOn);
   const selectedVirtualBg = useDeviceStore((store) => store.selectedVirtualBg);
   const { setCams, setMics, setSpeakers, setCamError, setMicError, setSpeakerError, setVolume } = useDeviceActions();
-  const { i18n } = useTranslation();
 
   // 장치 목록 설정
   const { cameras, microphones, speakers } = useMediaDevices();
@@ -117,10 +114,6 @@ function DebatePage() {
   useEffect(() => {
     stream?.getVideoTracks().forEach((track) => (track.enabled = isCamOn));
   }, [stream, isCamOn]);
-
-  useEffect(() => {
-    i18n.changeLanguage("en");
-  }, [i18n]);
 
   return (
     <StreamContext.Provider value={stream}>
