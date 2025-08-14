@@ -1,1 +1,50 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    color: #171717;
+    font-family: "Pretendard Variable";
+    text-underline-offset: 0.1875rem;
+  }
+}
+
+.slider {
+  position: relative;
+  height: 12px;
+}
+
+.slider input[type="range"]:first-child {
+  appearance: none;
+  position: absolute;
+  width: 100%;
+  height: 8px;
+  overflow: hidden;
+  border: 1px solid #e9e9e9;
+  border-radius: 4px;
+}
+
+.slider input[type="range"]:first-child::-webkit-slider-thumb {
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  box-shadow: -100vw 0 0 100vw #4b9bf3;
+}
+
+.slider input[type="range"]:last-child {
+  appearance: none;
+  position: absolute;
+  width: 100%;
+  height: 8px;
+  background: transparent;
+}
+
+.slider input[type="range"]:last-child::-webkit-slider-thumb {
+  appearance: none;
+  width: 6px;
+  height: 13px;
+  background: white;
+  border-radius: 5px;
+  border: 1px solid #2b87ec;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
+}
