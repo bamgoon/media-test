@@ -12,8 +12,9 @@ import {
 } from "@hooks";
 import { useDeviceActions, useDeviceStore } from "@stores";
 import { CameraSet, MicrophoneSet, SpeakerSet, VirtualBgSet } from "@components";
+import useMediaStore from "@hooks/useMediaStore";
 
-const defaultVideoConstraints = {
+const defaultVideoConstraints: MediaTrackConstraints = {
   frameRate: { ideal: 30, max: 30 },
   width: { min: 320, ideal: 320, max: 320 },
   height: { min: 240, ideal: 240, max: 240 },
@@ -33,6 +34,8 @@ const requestConstraints = {
 function DeviceTestPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  const { cams, mics, spks, camPermission, micPermission, requestPermission } = useMediaStore();
+
   const isCamOn = useDeviceStore((store) => store.isCamOn);
   const isMicOn = useDeviceStore((store) => store.isMicOn);
   const isSpeakerOn = useDeviceStore((store) => store.isSpeakerOn);
@@ -45,37 +48,47 @@ function DeviceTestPage() {
   const { setCams, setMics, setSpeakers, setCamError, setMicError, setVolume } = useDeviceActions();
 
   // 장치 목록 설정
-  const { cameras, microphones, speakers } = useMediaDevices();
+  // const { cameras, microphones, speakers } = useMediaDevices();
 
   useEffect(() => {
-    setCams(cameras);
-  }, [cameras, setCams]);
+    setCams(cams);
+  }, [cams, setCams]);
 
   useEffect(() => {
-    setMics(microphones);
-  }, [microphones, setMics]);
+    setMics(mics);
+  }, [mics, setMics]);
 
   useEffect(() => {
-    setSpeakers(speakers);
-  }, [speakers, setSpeakers]);
+    setSpeakers(spks);
+  }, [spks, setSpeakers]);
 
   // 미디어 장치 권한 요청
-  useRequestPermission(requestConstraints);
+  // useRequestPermission(requestConstraints);
+  useEffect(() => {
+    requestPermission();
+  }, [requestPermission]);
 
   // 비디오 스트림
   const { videoStream, videoStreamError } = useVideoStream(
     useMemo(
-      () => ({ deviceId: { exact: selectedCamId ? selectedCamId : undefined }, ...defaultVideoConstraints }),
-      [selectedCamId]
-    )
+      () =>
+        camPermission === "granted" || camPermission === "denied"
+          ? { deviceId: { exact: selectedCamId ? selectedCamId : undefined }, ...defaultVideoConstraints }
+          : false,
+      [camPermission, selectedCamId]
+    ),
+    camPermission === "granted"
   );
   useEffect(() => setCamError(videoStreamError), [videoStreamError, setCamError]);
 
   // 오디오 스트림
   const { audioStream, audioStreamError } = useAudioStream(
     useMemo(
-      () => ({ deviceId: { exact: selectedMicId ? selectedMicId : undefined }, ...defaultAudioConstraints }),
-      [selectedMicId]
+      () =>
+        micPermission === "granted" || micPermission === "denied"
+          ? { deviceId: { exact: selectedMicId ? selectedMicId : undefined }, ...defaultAudioConstraints }
+          : false,
+      [micPermission, selectedMicId]
     )
   );
   useEffect(() => setMicError(audioStreamError), [audioStreamError, setMicError]);

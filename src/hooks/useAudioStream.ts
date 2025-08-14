@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 // eslint-disable-next-line no-undef
-function useAudioStream(audioConstraints: boolean | MediaTrackConstraints = true) {
+function useAudioStream(audioConstraints: boolean | MediaTrackConstraints = true, autoRetry = true) {
   const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
   const [audioStreamError, setAudioStreamError] = useState<Error | null>(null);
 
@@ -14,6 +14,12 @@ function useAudioStream(audioConstraints: boolean | MediaTrackConstraints = true
         if (isMounted) {
           setAudioStream(stream);
           setAudioStreamError(null);
+          stream.getTracks().forEach((track) =>
+            track.addEventListener("ended", () => {
+              console.log("track ended", track.id);
+              getAudioStream();
+            })
+          );
         } else {
           stream.getTracks().forEach((track) => track.stop());
         }
@@ -26,6 +32,11 @@ function useAudioStream(audioConstraints: boolean | MediaTrackConstraints = true
           } else {
             setAudioStreamError(new Error("Unknown error occurred"));
           }
+          if (autoRetry) {
+            setTimeout(() => {
+              getAudioStream();
+            }, 1000);
+          }
         }
       }
     };
@@ -35,7 +46,7 @@ function useAudioStream(audioConstraints: boolean | MediaTrackConstraints = true
     return () => {
       isMounted = false;
     };
-  }, [audioConstraints]);
+  }, [audioConstraints, autoRetry]);
 
   useEffect(() => {
     return () => audioStream?.getTracks().forEach((track) => track.stop());

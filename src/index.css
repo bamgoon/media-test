@@ -98,7 +98,7 @@
 
 /* Base Styles */
 #root {
-  min-width: 1280px;
+  /* min-width: 1280px; */
   min-height: 100vh;
   color: var(--color-grey-900);
   background-color: var(--color-grey-100);
