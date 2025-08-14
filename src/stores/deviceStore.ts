@@ -64,7 +64,7 @@ type VirtualBgSlice = {
 type DeviceState = CamSlice & MicSlice & SpeakerSlice & VirtualBgSlice;
 
 const createCamSlice: StateCreator<DeviceState, [["zustand/devtools", never]], [], CamSlice> = (set, get) => ({
-  isCamOn: true,
+  isCamOn: false,
   camError: null,
   cams: [],
   selectedCamId: "",
@@ -90,7 +90,7 @@ const createCamSlice: StateCreator<DeviceState, [["zustand/devtools", never]], [
 });
 
 const createMicSlice: StateCreator<DeviceState, [["zustand/devtools", never]], [], MicSlice> = (set, get) => ({
-  isMicOn: true,
+  isMicOn: false,
   micError: null,
   mics: [],
   selectedMicId: "",
@@ -119,7 +119,7 @@ const createMicSlice: StateCreator<DeviceState, [["zustand/devtools", never]], [
 });
 
 const createSpeakerSlice: StateCreator<DeviceState, [["zustand/devtools", never]], [], SpeakerSlice> = (set, get) => ({
-  isSpeakerOn: false,
+  isSpeakerOn: true,
   speakerError: null,
   speakers: [],
   selectedSpeakerId: "",
@@ -135,14 +135,17 @@ const createSpeakerSlice: StateCreator<DeviceState, [["zustand/devtools", never]
     setSpeakers: (speakers) => {
       const { selectedSpeakerId } = get();
       const isSelectedSpeakerAvailable = speakers.some((speaker) => speaker.deviceId === selectedSpeakerId);
-      set({ speakers, selectedSpeakerId: isSelectedSpeakerAvailable ? selectedSpeakerId : speakers[0]?.deviceId || "" });
+      set({
+        speakers,
+        selectedSpeakerId: isSelectedSpeakerAvailable ? selectedSpeakerId : speakers[0]?.deviceId || "",
+      });
     },
     setSelectedSpeakerId: (speakerId) => set({ selectedSpeakerId: speakerId }),
   },
 });
 
 const createVirtualBgSlice: StateCreator<DeviceState, [], [], VirtualBgSlice> = (set, get) => ({
-  isVirtualBgOn: true,
+  isVirtualBgOn: false,
   selectedVirtualBg: VirtualBg.Blur,
 
   virtualBgActions: {
@@ -167,7 +170,7 @@ export const useDeviceStore = create<DeviceState, [["zustand/devtools", never]]>
     ...createMicSlice(...args),
     ...createSpeakerSlice(...args),
     ...createVirtualBgSlice(...args),
-  })),
+  }))
 );
 
 export const useDeviceActions = () => {
