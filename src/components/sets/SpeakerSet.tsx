@@ -6,9 +6,6 @@ import { useDeviceActions, useDeviceStore } from "@stores";
 
 function SpeakerSet() {
   const isSpeakerOn = useDeviceStore((store) => store.isSpeakerOn);
-  const speakerError = useDeviceStore((store) => store.speakerError);
-  const speakers = useDeviceStore((store) => store.speakers);
-  const selectedSpeakerId = useDeviceStore((store) => store.selectedSpeakerId);
   const { toggleSpeaker } = useDeviceActions();
 
   const testAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -51,19 +48,9 @@ function SpeakerSet() {
         <p className="typo-xs600">스피커</p>
         <Switch checked={isSpeakerOn} onChange={handleSpeakerToggle} />
       </div>
-      <Select value={selectedSpeakerId} disabled>
-        {speakers.length === 0 && (
-          <option
-            value=""
-            label={speakerError ? "스피커를 사용할 수 없습니다." : "스피커를 사용할 수 없습니다."}
-            disabled
-          />
-        )}
-        {speakers.map((speaker) => (
-          <option key={speaker.deviceId} value={speaker.deviceId} label={speaker.label} disabled />
-        ))}
+      <Select value="">
+        <option value="" label="기본값 - 시스템 기본 스피커" />
       </Select>
-      {!!speakerError && <p className="typo-2xs600 mt-[4px] pl-[4px] text-red-500">스피커를 사용할 수 없습니다.</p>}
 
       <button
         className="typo-2xs600 px-[30px] py-[6px] mt-[4px] w-full rounded px bg-primary-500 text-white hover:bg-primary-600 disabled:bg-grey-400"

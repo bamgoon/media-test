@@ -42,7 +42,7 @@ function DeviceTestPage() {
   const isNoiseSuppressionOn = useDeviceStore((store) => store.isNoiseSuppressionOn);
   const isVirtualBgOn = useDeviceStore((store) => store.isVirtualBgOn);
   const selectedVirtualBg = useDeviceStore((store) => store.selectedVirtualBg);
-  const { setCams, setMics, setSpeakers, setCamError, setMicError, setSpeakerError, setVolume } = useDeviceActions();
+  const { setCams, setMics, setSpeakers, setCamError, setMicError, setVolume } = useDeviceActions();
 
   // 장치 목록 설정
   const { cameras, microphones, speakers } = useMediaDevices();
@@ -79,16 +79,6 @@ function DeviceTestPage() {
     )
   );
   useEffect(() => setMicError(audioStreamError), [audioStreamError, setMicError]);
-
-  // 스피커 에러 처리
-  useEffect(() => {
-    // 마이크 권한이 있는데도 스피커 목록이 없는 경우엔 NotFoundError 발생
-    if (audioStreamError?.name !== "NotAllowedError" && speakers.length === 0) {
-      setSpeakerError({ name: "NotFoundError", message: "Requested device not found" });
-    } else {
-      setSpeakerError(null);
-    }
-  }, [audioStreamError, speakers, setSpeakerError]);
 
   // 가상 배경 스트림
   const virtualStream = useSegmentation(videoStream, isVirtualBgOn, selectedVirtualBg);
