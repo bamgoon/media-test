@@ -1,1 +1,1 @@
-export * from "./debate-room";
+export * from "./sets";
