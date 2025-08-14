@@ -1,6 +1,311 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
 @import "tailwindcss";
 
+@theme {
+  /* Font Weight */
+  --font-weight-bold: 700;
+  --font-weight-semibold: 600;
+  --font-weight-regular: 400;
+  --font-weight-light: 300;
+
+  /* Font Family */
+  --font-family-sans: Pretendard, sans-serif;
+  --font-family-serif: Pretendard, serif;
+
+  /* Font Size */
+  --font-size-3xs: 10px;
+  --font-size-2xs: 12px;
+  --font-size-xs: 14px;
+  --font-size-sm: 16px;
+  --font-size-md: 18px;
+  --font-size-lg: 20px;
+  --font-size-xl: 22px;
+  --font-size-2xl: 28px;
+  --font-size-3xl: 30px;
+
+  /* Line Height */
+  --line-height-3xs: 14px;
+  --line-height-2xs: 16px;
+  --line-height-xs: 18px;
+  --line-height-sm: 20px;
+  --line-height-md: 22px;
+  --line-height-lg: 24px;
+  --line-height-xl: 26px;
+  --line-height-2xl: 32px;
+  --line-height-3xl: 34px;
+
+  /* Colors - Primary */
+  --color-primary-50: #f5faff;
+  --color-primary-100: #f0f7ff;
+  --color-primary-200: #e7f2ff;
+  --color-primary-300: #dcedff;
+  --color-primary-400: #aacff7;
+  --color-primary-500: #4b9bf3;
+  --color-primary-600: #2b87ec;
+  --color-primary-700: #458dc5;
+  --color-primary-800: #004c9f;
+  --color-primary-900: #0a3058;
+
+  /* Colors - Green */
+  --color-green-50: #f3fff7;
+  --color-green-100: #edfff3;
+  --color-green-200: #e0ffeb;
+  --color-green-300: #c5f8d7;
+  --color-green-400: #a1f4be;
+  --color-green-500: #32dbb3;
+  --color-green-600: #33bc9c;
+  --color-green-700: #01ae85;
+  --color-green-800: #177e66;
+  --color-green-900: #064f3d;
+
+  /* Colors - Orange */
+  --color-orange-50: #fff7ed;
+  --color-orange-100: #fff1de;
+  --color-orange-200: #ffe6c1;
+  --color-orange-300: #ffdcaf;
+  --color-orange-400: #ffcb88;
+  --color-orange-500: #ffb85d;
+  --color-orange-600: #f59c2a;
+  --color-orange-700: #e38102;
+  --color-orange-800: #d77900;
+  --color-orange-900: #744100;
+
+  /* Colors - Red */
+  --color-red-50: #fff3f3;
+  --color-red-100: #ffe8e8;
+  --color-red-200: #ffd6d6;
+  --color-red-300: #ffc7c7;
+  --color-red-400: #f8a5a5;
+  --color-red-500: #fb7e7d;
+  --color-red-600: #f36160;
+  --color-red-700: #f24e4f;
+  --color-red-800: #d44445;
+  --color-red-900: #801212;
+
+  /* Colors - Grey */
+  --color-grey-0: #ffffff;
+  --color-grey-50: #fcfcfc;
+  --color-grey-100: #f8f8f8;
+  --color-grey-200: #eeeeee;
+  --color-grey-300: #e9e9e9;
+  --color-grey-400: #dddddd;
+  --color-grey-500: #bbbbbb;
+  --color-grey-600: #777777;
+  --color-grey-700: #555555;
+  --color-grey-800: #333333;
+  --color-grey-900: #000000;
+}
+
+/* Base Styles */
+#root {
+  min-width: 1280px;
+  min-height: 100vh;
+  color: var(--color-grey-900);
+  background-color: var(--color-grey-100);
+  user-select: none;
+}
+
+/* Typography Utilities */
+.typo-3xs300 {
+  font-size: var(--font-size-3xs);
+  font-weight: var(--font-weight-light);
+}
+.typo-3xs400 {
+  font-size: var(--font-size-3xs);
+  font-weight: var(--font-weight-regular);
+}
+.typo-3xs600 {
+  font-size: var(--font-size-3xs);
+  font-weight: var(--font-weight-semibold);
+}
+.typo-3xs700 {
+  font-size: var(--font-size-3xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.typo-2xs300 {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-light);
+}
+.typo-2xs400 {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-regular);
+}
+.typo-2xs600 {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-semibold);
+}
+.typo-2xs700 {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.typo-xs300 {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-light);
+}
+.typo-xs400 {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+}
+.typo-xs600 {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+.typo-xs700 {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.typo-sm300 {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-light);
+}
+.typo-sm400 {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+.typo-sm600 {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+.typo-sm700 {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.typo-md300 {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-light);
+}
+.typo-md400 {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+}
+.typo-md600 {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+}
+.typo-md700 {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+}
+
+.typo-lg300 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-light);
+}
+.typo-lg400 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-regular);
+}
+.typo-lg600 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+.typo-lg700 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.typo-xl300 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-light);
+}
+.typo-xl400 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-regular);
+}
+.typo-xl600 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
+.typo-xl700 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.typo-2xl300 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-light);
+}
+.typo-2xl400 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-regular);
+}
+.typo-2xl600 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+}
+.typo-2xl700 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.typo-3xl300 {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-light);
+}
+.typo-3xl400 {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-regular);
+}
+.typo-3xl600 {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-semibold);
+}
+.typo-3xl700 {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Alignment Utilities */
+.align-top-left {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.align-top-center {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.align-top-right {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+.align-center-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.align-center-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.align-center-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.align-bottom-left {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+}
+.align-bottom-center {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.align-bottom-right {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
 @layer base {
   :root {
     color: #171717;

@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
 
-import { CheckButton, Option, Select, Switch } from "@/components";
+import { Select, Switch } from "@components";
 import { useDeviceActions, useDeviceStore } from "@stores";
 
 function MicrophoneSet() {
@@ -17,7 +17,7 @@ function MicrophoneSet() {
     toggleMic();
   };
 
-  const handleMicChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleMicChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelectedMicId(e.target.value);
   };
 
@@ -56,17 +56,10 @@ function MicrophoneSet() {
         <p className="typo-xs600">마이크</p>
         <Switch checked={isMicOn} onChange={handleMicToggle} />
       </div>
-      <Select
-        size="2xs"
-        value={selectedMicId}
-        onChange={handleMicChange}
-        className="mt-[4px] w-full text-start"
-        error={!!micError}
-        disabled={mics.length === 0}
-      >
-        {mics.length === 0 && <Option value="" label="마이크를 사용할 수 없습니다." disabled />}
+      <Select value={selectedMicId} onChange={handleMicChange} disabled={mics.length === 0}>
+        {mics.length === 0 && <option value="" label="마이크를 사용할 수 없습니다." disabled />}
         {mics.map((mic) => (
-          <Option key={mic.deviceId} value={mic.deviceId} label={mic.label} />
+          <option key={mic.deviceId} value={mic.deviceId} label={mic.label} />
         ))}
       </Select>
       {!!micError && <p className="typo-2xs600 mt-[4px] pl-[4px] text-red-500">{errorMessage()}</p>}
@@ -83,15 +76,16 @@ function MicrophoneSet() {
           className="cursor-pointer"
         />
       </div>
-      <div className="text-right">
-        <CheckButton
-          size="2xs"
+      <label className="typo-2xs400 flex justify-end items-center gap-[4px]">
+        <input
+          type="checkbox"
           checked={isNoiseSuppressionOn}
           onChange={handleNoiseSuppressionToggle}
           disabled={!isMicOn}
-          label="주변 소음 억제"
+          className="accent-primary-600 "
         />
-      </div>
+        <span>주변 소음 억제</span>
+      </label>
     </div>
   );
 }

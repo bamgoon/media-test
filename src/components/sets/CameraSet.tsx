@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
 
-import { Option, Select, Switch } from "@/components";
+import { Select, Switch } from "@components";
 import { useDeviceActions, useDeviceStore } from "@stores";
 
 function CameraSet() {
@@ -14,7 +14,7 @@ function CameraSet() {
     toggleCam();
   };
 
-  const handleCamChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleCamChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelectedCamId(e.target.value);
   };
 
@@ -45,17 +45,10 @@ function CameraSet() {
         <p className="typo-xs600">카메라</p>
         <Switch checked={isCamOn} onChange={handleCamToggle} />
       </div>
-      <Select
-        size="2xs"
-        value={selectedCamId}
-        onChange={handleCamChange}
-        className="mt-[4px] w-full text-start"
-        error={!!camError}
-        disabled={cams.length === 0}
-      >
-        {cams.length === 0 && <Option value="" label="카메라를 사용할 수 없습니다." disabled />}
+      <Select value={selectedCamId} onChange={handleCamChange} disabled={cams.length === 0}>
+        {cams.length === 0 && <option value="" label="카메라를 사용할 수 없습니다." disabled />}
         {cams.map((cam) => (
-          <Option key={cam.deviceId} value={cam.deviceId} label={cam.label} />
+          <option key={cam.deviceId} value={cam.deviceId} label={cam.label} />
         ))}
       </Select>
       {!!camError && <p className="typo-2xs600 mt-[4px] pl-[4px] text-red-500">{errorMessage()}</p>}

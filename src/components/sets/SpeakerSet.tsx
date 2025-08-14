@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { Button, Option, Select, Switch } from "@/components";
+import { Select, Switch } from "@components";
 import { test } from "@assets/sounds";
 import { useDeviceActions, useDeviceStore } from "@stores";
 
@@ -51,34 +51,27 @@ function SpeakerSet() {
         <p className="typo-xs600">스피커</p>
         <Switch checked={isSpeakerOn} onChange={handleSpeakerToggle} />
       </div>
-      <Select
-        size="2xs"
-        value={selectedSpeakerId}
-        className="mt-[4px] w-full text-start disabled:bg-white"
-        error={!!speakerError}
-        disabled
-      >
+      <Select value={selectedSpeakerId} disabled>
         {speakers.length === 0 && (
-          <Option
+          <option
             value=""
             label={speakerError ? "스피커를 사용할 수 없습니다." : "스피커를 사용할 수 없습니다."}
             disabled
           />
         )}
         {speakers.map((speaker) => (
-          <Option key={speaker.deviceId} value={speaker.deviceId} label={speaker.label} disabled />
+          <option key={speaker.deviceId} value={speaker.deviceId} label={speaker.label} disabled />
         ))}
       </Select>
       {!!speakerError && <p className="typo-2xs600 mt-[4px] pl-[4px] text-red-500">스피커를 사용할 수 없습니다.</p>}
 
-      <Button
-        size="2xs"
-        className="typo-2xs600 mt-[4px] w-full"
+      <button
+        className="typo-2xs600 px-[30px] py-[6px] mt-[4px] w-full rounded px bg-primary-500 text-white hover:bg-primary-600 disabled:bg-grey-400"
         onClick={handleTestSpeaker}
         disabled={!isSpeakerOn || isPlaying}
       >
         스피커 테스트
-      </Button>
+      </button>
     </div>
   );
 }

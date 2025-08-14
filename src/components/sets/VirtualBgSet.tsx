@@ -1,5 +1,4 @@
-import { Switch } from "@/components";
-import { cn } from "@/utils";
+import { Switch } from "@components";
 import { VirtualBg } from "@enums";
 import { useDeviceActions, useDeviceStore } from "@stores";
 
@@ -26,18 +25,17 @@ function VirtualBgSet() {
         <Switch checked={isVirtualBgOn} onChange={handleToggleVirtualBg} />
       </div>
 
-      <div className={cn("typo-2xs400 mt-[4px] grid h-[140px] grid-cols-2 gap-[8px]", isVirtualBgOn || "opacity-40")}>
+      <div className={`typo-2xs400 mt-[4px] grid h-[140px] grid-cols-2 gap-[8px] ${isVirtualBgOn || "opacity-40"}`}>
         {virtualBg.map((_, index) => (
           <div
             key={index}
-            className={cn(
-              "align-center-center rounded border bg-grey-200 bg-contain",
-              isVirtualBgOn && "cursor-pointer",
-              index === selectedVirtualBg && "border-primary-600",
-              index === 1 && "bg-[url('/src/assets/images/blue.png')] text-transparent",
-              index === 2 && "bg-[url('/src/assets/images/house.png')] text-transparent",
-              index === 3 && "bg-[url('/src/assets/images/office.png')] text-transparent"
-            )}
+            className={`align-center-center rounded border bg-grey-200 bg-contain
+              ${isVirtualBgOn && "cursor-pointer"}
+              ${index === selectedVirtualBg ? "border-primary-600" : "border-grey-400"}
+              ${index === 1 && "bg-[url('/src/assets/images/blue.png')] text-transparent"}
+              ${index === 2 && "bg-[url('/src/assets/images/house.png')] text-transparent"}
+              ${index === 3 && "bg-[url('/src/assets/images/office.png')] text-transparent"}
+            `}
             onClick={() => handleSelectVirtualBg(index)}
           />
         ))}

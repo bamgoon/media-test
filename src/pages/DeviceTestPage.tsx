@@ -129,7 +129,8 @@ function DeviceTestPage() {
         <video
           ref={videoRef}
           autoPlay
-          className={cn("h-[522px] w-[696px] rounded border-[4px] object-cover", isTalk && "border-primary-500")}
+          className={`h-[522px] w-[696px] rounded border-[4px] object-cover
+            ${isTalk ? "border-primary-500" : "border-grey-400"}`}
           muted={!isSpeakerOn}
         />
         <div className="ml-[30px] flex w-[260px] flex-col gap-[16px]">
