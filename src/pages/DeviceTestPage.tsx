@@ -1,7 +1,5 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
-import DeviceTestPage2 from "@components/debate-room/DeviceTestPage2";
-import { StreamContext } from "@contexts";
 import {
   useAudioStream,
   useCombinedStream,
@@ -13,6 +11,7 @@ import {
   useVideoStream,
 } from "@hooks";
 import { useDeviceActions, useDeviceStore } from "@stores";
+import { CameraSet, MicrophoneSet, SpeakerSet, VirtualBgSet } from "@components";
 
 const defaultVideoConstraints = {
   frameRate: { ideal: 30, max: 30 },
@@ -31,9 +30,12 @@ const requestConstraints = {
   audio: defaultAudioConstraints,
 };
 
-function DebatePage() {
+function DeviceTestPage() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
   const isCamOn = useDeviceStore((store) => store.isCamOn);
   const isMicOn = useDeviceStore((store) => store.isMicOn);
+  const isSpeakerOn = useDeviceStore((store) => store.isSpeakerOn);
   const selectedCamId = useDeviceStore((store) => store.selectedCamId);
   const selectedMicId = useDeviceStore((store) => store.selectedMicId);
   const threshold = useDeviceStore((store) => store.threshold);
@@ -115,11 +117,30 @@ function DebatePage() {
     stream?.getVideoTracks().forEach((track) => (track.enabled = isCamOn));
   }, [stream, isCamOn]);
 
+  useEffect(() => {
+    if (videoRef.current && stream && stream.active) {
+      videoRef.current.srcObject = stream;
+    }
+  }, [stream]);
+
   return (
-    <StreamContext.Provider value={stream}>
-      <DeviceTestPage2 isTalk={isTalk} />
-    </StreamContext.Provider>
+    <div className="align-center-center h-screen flex-col">
+      <div className="mt-[20px] flex">
+        <video
+          ref={videoRef}
+          autoPlay
+          className={cn("h-[522px] w-[696px] rounded border-[4px] object-cover", isTalk && "border-primary-500")}
+          muted={!isSpeakerOn}
+        />
+        <div className="ml-[30px] flex w-[260px] flex-col gap-[16px]">
+          <CameraSet />
+          <MicrophoneSet />
+          <SpeakerSet />
+          <VirtualBgSet />
+        </div>
+      </div>
+    </div>
   );
 }
 
-export default DebatePage;
+export default DeviceTestPage;
