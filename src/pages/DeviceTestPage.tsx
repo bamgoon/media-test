@@ -65,7 +65,8 @@ function DeviceTestPage() {
           ? { deviceId: { exact: selectedCamId }, ...defaultVideoConstraints }
           : false,
       [camPermission, selectedCamId]
-    )
+    ),
+    camPermission === "granted"
   );
   useEffect(() => setCamError(videoStreamError), [videoStreamError, setCamError]);
 
@@ -77,7 +78,8 @@ function DeviceTestPage() {
           ? { deviceId: { exact: selectedMicId }, ...defaultAudioConstraints }
           : false,
       [micPermission, selectedMicId]
-    )
+    ),
+    micPermission === "granted"
   );
   useEffect(() => setMicError(audioStreamError), [audioStreamError, setMicError]);
 
