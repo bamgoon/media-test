@@ -2,8 +2,10 @@ import { ChangeEvent } from "react";
 
 import { Select, Switch } from "@components";
 import { useDeviceActions, useDeviceStore } from "@stores";
+import { useMediaStore } from "@hooks";
 
 function MicrophoneSet() {
+  const { micPermission } = useMediaStore();
   const isMicOn = useDeviceStore((store) => store.isMicOn);
   const micError = useDeviceStore((store) => store.micError);
   const mics = useDeviceStore((store) => store.mics);
@@ -56,8 +58,13 @@ function MicrophoneSet() {
         <p className="typo-xs600">마이크</p>
         <Switch checked={isMicOn} onChange={handleMicToggle} />
       </div>
-      <Select value={selectedMicId} onChange={handleMicChange} disabled={mics.length === 0}>
-        {mics.length === 0 && <option value="" label="마이크를 사용할 수 없습니다." disabled />}
+      <Select
+        value={selectedMicId}
+        onChange={handleMicChange}
+        disabled={mics.length === 0 || micPermission !== "granted"}
+      >
+        {mics.length === 0 && <option value="" label="마이크 장치를 찾을 수 없습니다." disabled />}
+        {micPermission !== "granted" && <option value="" label="마이크 권한이 필요합니다." disabled />}
         {mics.map((mic) => (
           <option key={mic.deviceId} value={mic.deviceId} label={mic.label} />
         ))}

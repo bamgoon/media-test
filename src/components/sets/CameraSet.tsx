@@ -2,8 +2,10 @@ import { ChangeEvent } from "react";
 
 import { Select, Switch } from "@components";
 import { useDeviceActions, useDeviceStore } from "@stores";
+import { useMediaStore } from "@hooks";
 
 function CameraSet() {
+  const { camPermission } = useMediaStore();
   const isCamOn = useDeviceStore((store) => store.isCamOn);
   const camError = useDeviceStore((store) => store.camError);
   const cams = useDeviceStore((store) => store.cams);
@@ -45,8 +47,13 @@ function CameraSet() {
         <p className="typo-xs600">카메라</p>
         <Switch checked={isCamOn} onChange={handleCamToggle} />
       </div>
-      <Select value={selectedCamId} onChange={handleCamChange} disabled={cams.length === 0}>
-        {cams.length === 0 && <option value="" label="카메라를 사용할 수 없습니다." disabled />}
+      <Select
+        value={selectedCamId}
+        onChange={handleCamChange}
+        disabled={cams.length === 0 || camPermission !== "granted"}
+      >
+        {cams.length === 0 && <option label="카메라 장치를 찾을 수 없습니다." disabled />}
+        {camPermission !== "granted" && <option label="카메라 권한이 필요합니다." disabled />}
         {cams.map((cam) => (
           <option key={cam.deviceId} value={cam.deviceId} label={cam.label} />
         ))}
