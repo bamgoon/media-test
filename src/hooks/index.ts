@@ -10,3 +10,4 @@ export { default as useNoiseSuppression } from "./useNoiseSuppression";
 export { default as useMediaDevices } from "./useMediaDevices";
 export { default as useMediaStore } from "./useMediaStore";
 export { default as useStream } from "./useStream";
+export { default as useSegmenter } from "./useSegmenter";
