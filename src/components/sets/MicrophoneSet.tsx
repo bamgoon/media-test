@@ -5,7 +5,7 @@ import { useDeviceActions, useDeviceStore } from "@stores";
 import { useMediaStore } from "@hooks";
 
 function MicrophoneSet() {
-  const { micPermission } = useMediaStore();
+  const { micPermission, requestMicPermission } = useMediaStore();
   const isMicOn = useDeviceStore((store) => store.isMicOn);
   const micError = useDeviceStore((store) => store.micError);
   const mics = useDeviceStore((store) => store.mics);
@@ -58,17 +58,28 @@ function MicrophoneSet() {
         <p className="typo-xs600">마이크</p>
         <Switch checked={isMicOn} onChange={handleMicToggle} />
       </div>
-      <Select
-        value={selectedMicId}
-        onChange={handleMicChange}
-        disabled={mics.length === 0 || micPermission !== "granted"}
-      >
-        {mics.length === 0 && <option value="" label="마이크 장치를 찾을 수 없습니다." disabled />}
-        {micPermission !== "granted" && <option value="" label="마이크 권한이 필요합니다." disabled />}
-        {mics.map((mic) => (
-          <option key={mic.deviceId} value={mic.deviceId} label={mic.label} />
-        ))}
-      </Select>
+
+      {micPermission === "prompt" && mics.length > 0 ? (
+        <button
+          onClick={requestMicPermission}
+          className="text-primary-500 rounded border border-grey-400 bg-white py-[6px] pl-[10px] pr-[30px] typo-2xs600 mt-[4px] w-full "
+        >
+          마이크 권한 요청
+        </button>
+      ) : (
+        <Select
+          value={selectedMicId}
+          onChange={handleMicChange}
+          disabled={mics.length === 0 || micPermission !== "granted"}
+        >
+          {mics.length === 0 && <option value="" label="마이크 장치를 찾을 수 없습니다." disabled />}
+          {micPermission !== "granted" && <option value="" label="마이크 권한이 필요합니다." disabled />}
+          {mics.map((mic) => (
+            <option key={mic.deviceId} value={mic.deviceId} label={mic.label} />
+          ))}
+        </Select>
+      )}
+
       {!!micError && <p className="typo-2xs600 mt-[4px] pl-[4px] text-red-500">{errorMessage()}</p>}
 
       <div className="slider mt-[4px]">
