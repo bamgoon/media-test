@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useRef } from "react";
 
 import {
-  useAudioStream,
   useCombinedStream,
   useNoiseSuppression,
   useSegmentation,
+  useStream,
   useSpeechDetection,
-  useVideoStream,
   useMediaStore,
 } from "@hooks";
 import { useDeviceActions, useDeviceStore } from "@stores";
@@ -57,30 +56,42 @@ function DeviceTestPage() {
     requestPermission();
   }, [requestPermission]);
 
+  // 비디오 제약 조건
+  const videoConstraints = useMemo(() => {
+    return {
+      video: {
+        deviceId: selectedCamId ? { exact: selectedCamId } : undefined,
+        ...defaultVideoConstraints,
+      },
+    };
+  }, [selectedCamId]);
+
   // 비디오 스트림
-  const { videoStream, videoStreamError } = useVideoStream(
-    useMemo(
-      () =>
-        camPermission === "granted" || camPermission === "denied"
-          ? { deviceId: { exact: selectedCamId }, ...defaultVideoConstraints }
-          : false,
-      [camPermission, selectedCamId]
-    ),
-    camPermission === "granted"
-  );
+  const { stream: videoStream, error: videoStreamError } = useStream({
+    enabled: isCamOn && (camPermission === "granted" || camPermission === "denied"),
+    constraints: videoConstraints,
+    retryOnTrackEnded: true,
+    maxRetryCount: Infinity,
+  });
   useEffect(() => setCamError(videoStreamError), [videoStreamError, setCamError]);
 
+  // 오디오 제약 조건
+  const audioConstraints = useMemo(() => {
+    return {
+      audio: {
+        deviceId: selectedMicId ? { exact: selectedMicId } : undefined,
+        ...defaultAudioConstraints,
+      },
+    };
+  }, [selectedMicId]);
+
   // 오디오 스트림
-  const { audioStream, audioStreamError } = useAudioStream(
-    useMemo(
-      () =>
-        micPermission === "granted" || micPermission === "denied"
-          ? { deviceId: { exact: selectedMicId }, ...defaultAudioConstraints }
-          : false,
-      [micPermission, selectedMicId]
-    ),
-    micPermission === "granted"
-  );
+  const { stream: audioStream, error: audioStreamError } = useStream({
+    enabled: isMicOn && (micPermission === "granted" || micPermission === "denied"),
+    constraints: audioConstraints,
+    retryOnTrackEnded: true,
+    maxRetryCount: Infinity,
+  });
   useEffect(() => setMicError(audioStreamError), [audioStreamError, setMicError]);
 
   // 가상 배경 스트림
@@ -99,16 +110,8 @@ function DeviceTestPage() {
   }, [volume, setVolume]);
 
   useEffect(() => {
-    suppressedStream?.getAudioTracks().forEach((track) => (track.enabled = isMicOn));
-  }, [suppressedStream, isMicOn]);
-
-  useEffect(() => {
     stream?.getAudioTracks().forEach((track) => (track.enabled = isTalk));
   }, [stream, isTalk]);
-
-  useEffect(() => {
-    stream?.getVideoTracks().forEach((track) => (track.enabled = isCamOn));
-  }, [stream, isCamOn]);
 
   useEffect(() => {
     if (videoRef.current && stream && stream.active) {
