@@ -64,21 +64,19 @@ type VirtualBgSlice = {
 type DeviceState = CamSlice & MicSlice & SpeakerSlice & VirtualBgSlice;
 
 const createCamSlice: StateCreator<DeviceState, [["zustand/devtools", never]], [], CamSlice> = (set, get) => ({
-  isCamOn: false,
+  isCamOn: true,
   camError: null,
   cams: [],
   selectedCamId: "",
 
   camActions: {
     toggleCam: () => {
-      const { isCamOn, camError } = get();
-      if (!camError) {
-        set({ isCamOn: !isCamOn });
-      }
+      const { isCamOn } = get();
+      set({ isCamOn: !isCamOn });
     },
     setCamError: (camError) => {
       const { isVirtualBgOn } = get();
-      set({ camError, isCamOn: !camError, isVirtualBgOn: camError ? false : isVirtualBgOn });
+      set({ camError, isVirtualBgOn: camError ? false : isVirtualBgOn });
     },
     setCams: (cams) => {
       const { selectedCamId } = get();
@@ -90,7 +88,7 @@ const createCamSlice: StateCreator<DeviceState, [["zustand/devtools", never]], [
 });
 
 const createMicSlice: StateCreator<DeviceState, [["zustand/devtools", never]], [], MicSlice> = (set, get) => ({
-  isMicOn: false,
+  isMicOn: true,
   micError: null,
   mics: [],
   selectedMicId: "",
@@ -100,12 +98,10 @@ const createMicSlice: StateCreator<DeviceState, [["zustand/devtools", never]], [
 
   micActions: {
     toggleMic: () => {
-      const { isMicOn, micError } = get();
-      if (!micError) {
-        set({ isMicOn: !isMicOn });
-      }
+      const { isMicOn } = get();
+      set({ isMicOn: !isMicOn });
     },
-    setMicError: (micError) => set({ micError, isMicOn: !micError }),
+    setMicError: (micError) => set({ micError }),
     setMics: (mics) => {
       const { selectedMicId } = get();
       const isSelectedMicAvailable = mics.some((mic) => mic.deviceId === selectedMicId);
