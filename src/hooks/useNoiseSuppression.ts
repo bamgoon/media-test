@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
 
+declare global {
+  interface Window {
+    RNNoiseNode: {
+      register(context: AudioContext): Promise<void>;
+      new (context: AudioContext): AudioWorkletNode;
+    };
+  }
+}
+
 function useNoiseSuppression(audioStream: MediaStream | null, isActive: boolean) {
   const [noiseSuppressedStream, setNoiseSuppressedStream] = useState<MediaStream | null>(null);
 
