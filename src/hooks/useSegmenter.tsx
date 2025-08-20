@@ -4,14 +4,23 @@ import { useEffect, useRef, useState } from "react";
 interface UseSegmenterOptions {
   enable: boolean;
   videoStream: MediaStream | null;
+  mode: "blur" | "image";
   blurIntensity?: number;
+  backgroundSrc?: string;
 }
 
-export default function useSegmenter({ enable, videoStream, blurIntensity = 4 }: UseSegmenterOptions) {
+export default function useSegmenter({
+  enable,
+  videoStream,
+  mode,
+  blurIntensity = 4,
+  backgroundSrc = "",
+}: UseSegmenterOptions) {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const imageSegmenterRef = useRef<ImageSegmenter | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const imageRef = useRef<HTMLImageElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const bgCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -40,6 +49,7 @@ export default function useSegmenter({ enable, videoStream, blurIntensity = 4 }:
     initialize();
 
     videoRef.current = document.createElement("video");
+    imageRef.current = document.createElement("img");
     canvasRef.current = document.createElement("canvas");
     bgCanvasRef.current = document.createElement("canvas");
     const canvasStream = canvasRef.current.captureStream();
@@ -53,6 +63,10 @@ export default function useSegmenter({ enable, videoStream, blurIntensity = 4 }:
       if (videoRef.current) {
         videoRef.current.remove();
         videoRef.current = null;
+      }
+      if (imageRef.current) {
+        imageRef.current.remove();
+        imageRef.current = null;
       }
       if (canvasRef.current) {
         canvasRef.current.remove();
@@ -75,6 +89,18 @@ export default function useSegmenter({ enable, videoStream, blurIntensity = 4 }:
   }, [videoStream]);
 
   useEffect(() => {
+    const image = imageRef.current;
+    if (!image) return;
+    image.crossOrigin = "anonymous";
+    image.onerror = () => {
+      const error = new Error("Failed to load background image");
+      console.error(error, backgroundSrc);
+      setError(error);
+    };
+    image.src = backgroundSrc;
+  }, [backgroundSrc]);
+
+  useEffect(() => {
     return () => {
       stream?.getTracks().forEach((track) => track.stop());
     };
@@ -86,13 +112,14 @@ export default function useSegmenter({ enable, videoStream, blurIntensity = 4 }:
     const intervalId = setInterval(() => {
       const imageSegmenter = imageSegmenterRef.current;
       const video = videoRef.current;
+      const image = imageRef.current;
       const canvas = canvasRef.current;
       const canvasCtx = canvas?.getContext("2d");
       const bgCanvas = bgCanvasRef.current;
       const bgCanvasCtx = bgCanvas?.getContext("2d");
 
       // 하나라도 준비되지 않았다면 리턴
-      if (!imageSegmenter || !video || !canvas || !bgCanvas || !canvasCtx || !bgCanvasCtx) return;
+      if (!imageSegmenter || !video || !image || !canvas || !bgCanvas || !canvasCtx || !bgCanvasCtx) return;
 
       // 비디오 준비 안됐으면 리턴
       if (video.readyState !== video.HAVE_ENOUGH_DATA) return;
@@ -117,9 +144,14 @@ export default function useSegmenter({ enable, videoStream, blurIntensity = 4 }:
         const canvasImageData = canvasCtx.getImageData(0, 0, width, height);
         const canvasData = canvasImageData.data;
 
-        // 블러 처리한 이미지를 배경 캔버스에 그리기
-        bgCanvasCtx.filter = `blur(${blurIntensity}px)`;
-        bgCanvasCtx.drawImage(video, 0, 0, width, height);
+        if (mode === "image") {
+          // 배경 이미지를 배경 캔버스에 그리기
+          bgCanvasCtx.drawImage(image, 0, 0, width, height);
+        } else {
+          // 블러 처리한 이미지를 배경 캔버스에 그리기
+          bgCanvasCtx.filter = `blur(${blurIntensity}px)`;
+          bgCanvasCtx.drawImage(video, 0, 0, width, height);
+        }
         const bgCanvasImageData = bgCanvasCtx.getImageData(0, 0, width, height);
         const bgCanvasData = bgCanvasImageData.data;
 
@@ -146,7 +178,7 @@ export default function useSegmenter({ enable, videoStream, blurIntensity = 4 }:
     return () => {
       clearInterval(intervalId);
     };
-  }, [enable, blurIntensity]);
+  }, [enable, mode, blurIntensity]);
 
   return { stream: enable ? stream : videoStream, streamError: error };
 }
