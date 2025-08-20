@@ -3,13 +3,15 @@ import { useEffect, useMemo, useRef } from "react";
 import {
   useCombinedStream,
   useNoiseSuppression,
-  useSegmentation,
-  useStream,
+  useSegmenter,
   useSpeechDetection,
+  useStream,
   useMediaStore,
 } from "@hooks";
 import { useDeviceActions, useDeviceStore } from "@stores";
 import { CameraSet, MicrophoneSet, SpeakerSet, VirtualBgSet } from "@components";
+import { VirtualBg } from "@enums";
+import { blue, house, office } from "@assets/images";
 
 const defaultVideoConstraints = {
   frameRate: { ideal: 30, max: 30 },
@@ -95,7 +97,24 @@ function DeviceTestPage() {
   useEffect(() => setMicError(audioStreamError), [audioStreamError, setMicError]);
 
   // 가상 배경 스트림
-  const virtualStream = useSegmentation(videoStream, isVirtualBgOn, selectedVirtualBg);
+  const { stream: virtualStream } = useSegmenter(
+    useMemo(
+      () => ({
+        videoStream,
+        enable: isVirtualBgOn,
+        mode: selectedVirtualBg === VirtualBg.Blur ? "blur" : "image",
+        backgroundSrc: (() => {
+          if (selectedVirtualBg === VirtualBg.Blur) return undefined;
+          if (selectedVirtualBg === VirtualBg.Blue) return blue;
+          if (selectedVirtualBg === VirtualBg.House) return house;
+          if (selectedVirtualBg === VirtualBg.Office) return office;
+          return undefined;
+        })(),
+        blurIntensity: 2,
+      }),
+      [videoStream, isVirtualBgOn, selectedVirtualBg]
+    )
+  );
 
   // 소음 억제 스트림
   const suppressedStream = useNoiseSuppression(audioStream, isNoiseSuppressionOn);
