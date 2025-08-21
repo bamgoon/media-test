@@ -136,10 +136,6 @@ function DeviceTestPage() {
   }, [volume, setVolume]);
 
   useEffect(() => {
-    finalStream?.getAudioTracks().forEach((track) => (track.enabled = isTalk));
-  }, [finalStream, isTalk]);
-
-  useEffect(() => {
     if (videoRef.current && finalStream && finalStream.active) {
       videoRef.current.srcObject = finalStream;
     }
