@@ -9,11 +9,16 @@ declare global {
   }
 }
 
-function useNoiseSuppression(audioStream: MediaStream | null, isActive: boolean) {
-  const [noiseSuppressedStream, setNoiseSuppressedStream] = useState<MediaStream | null>(null);
+interface UseNoiseSuppressionOptions {
+  enabled: boolean;
+  audioStream: MediaStream | null;
+}
+
+export default function useNoiseSuppression({ enabled, audioStream }: UseNoiseSuppressionOptions) {
+  const [stream, setStream] = useState<MediaStream | null>(null);
 
   useEffect(() => {
-    if (!isActive || !audioStream) {
+    if (!enabled || !audioStream) {
       return;
     }
 
@@ -32,7 +37,7 @@ function useNoiseSuppression(audioStream: MediaStream | null, isActive: boolean)
       sourceNode.connect(rnnoiseNode);
       rnnoiseNode.connect(destinationNode);
 
-      setNoiseSuppressedStream(destinationNode.stream);
+      setStream(destinationNode.stream);
     };
 
     init();
@@ -48,9 +53,7 @@ function useNoiseSuppression(audioStream: MediaStream | null, isActive: boolean)
         audioContext.close();
       }
     };
-  }, [audioStream, isActive]);
+  }, [enabled, audioStream]);
 
-  return isActive ? noiseSuppressedStream : audioStream;
+  return { stream: enabled ? stream : audioStream };
 }
-
-export default useNoiseSuppression;
