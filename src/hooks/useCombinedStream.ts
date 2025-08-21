@@ -1,35 +1,37 @@
 import { useEffect, useState } from "react";
 
-function useCombinedStream(inputStreams: (MediaStream | null)[]): MediaStream | null {
-  const [combinedStream, setCombinedStream] = useState<MediaStream | null>(null);
+interface UseCombinedStreamOptions {
+  inputStreams: (MediaStream | null)[];
+}
+
+export default function useCombinedStream({ inputStreams }: UseCombinedStreamOptions) {
+  const [stream, setStream] = useState<MediaStream | null>(null);
 
   useEffect(() => {
-    if (inputStreams.every((stream) => stream === null)) {
+    if (inputStreams.every((inputStream) => inputStream === null)) {
       return;
     }
 
     const newStream = new MediaStream();
 
-    inputStreams.forEach((stream) => {
-      if (stream) {
-        stream.getTracks().forEach((track) => {
+    inputStreams.forEach((inputStream) => {
+      if (inputStream) {
+        inputStream.getTracks().forEach((track) => {
           newStream.addTrack(track.clone());
         });
       }
     });
 
-    setCombinedStream(newStream);
+    setStream(newStream);
 
     return () => {
       newStream.getTracks().forEach((track) => {
         track.stop();
         newStream.removeTrack(track);
       });
-      setCombinedStream(null);
+      setStream(null);
     };
   }, [inputStreams]);
 
-  return combinedStream;
+  return { stream };
 }
-
-export default useCombinedStream;
