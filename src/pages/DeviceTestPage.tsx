@@ -120,7 +120,14 @@ function DeviceTestPage() {
   const suppressedStream = useNoiseSuppression(audioStream, isNoiseSuppressionOn);
 
   // 최종 스트림 설정
-  const stream = useCombinedStream(useMemo(() => [virtualStream, suppressedStream], [virtualStream, suppressedStream]));
+  const { stream: finalStream } = useCombinedStream(
+    useMemo(
+      () => ({
+        inputStreams: [virtualStream, suppressedStream],
+      }),
+      [virtualStream, suppressedStream]
+    )
+  );
 
   const { isTalk, volume } = useSpeechDetection(suppressedStream, threshold);
 
@@ -129,14 +136,14 @@ function DeviceTestPage() {
   }, [volume, setVolume]);
 
   useEffect(() => {
-    stream?.getAudioTracks().forEach((track) => (track.enabled = isTalk));
-  }, [stream, isTalk]);
+    finalStream?.getAudioTracks().forEach((track) => (track.enabled = isTalk));
+  }, [finalStream, isTalk]);
 
   useEffect(() => {
-    if (videoRef.current && stream && stream.active) {
-      videoRef.current.srcObject = stream;
+    if (videoRef.current && finalStream && finalStream.active) {
+      videoRef.current.srcObject = finalStream;
     }
-  }, [stream]);
+  }, [finalStream]);
 
   return (
     <div className="align-center-center h-screen flex-col">
