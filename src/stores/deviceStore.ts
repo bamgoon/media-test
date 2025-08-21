@@ -71,8 +71,8 @@ const createCamSlice: StateCreator<DeviceState, [["zustand/devtools", never]], [
 
   camActions: {
     toggleCam: () => {
-      const { isCamOn } = get();
-      set({ isCamOn: !isCamOn });
+      const { isCamOn, isVirtualBgOn } = get();
+      set({ isCamOn: !isCamOn, isVirtualBgOn: isCamOn ? false : isVirtualBgOn });
     },
     setCamError: (camError) => {
       const { isVirtualBgOn } = get();
