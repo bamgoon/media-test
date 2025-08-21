@@ -117,7 +117,15 @@ function DeviceTestPage() {
   );
 
   // 소음 억제 스트림
-  const suppressedStream = useNoiseSuppression(audioStream, isNoiseSuppressionOn);
+  const { stream: suppressedStream } = useNoiseSuppression(
+    useMemo(
+      () => ({
+        enabled: isNoiseSuppressionOn,
+        audioStream,
+      }),
+      [isNoiseSuppressionOn, audioStream]
+    )
+  );
 
   // 최종 스트림 설정
   const { stream: finalStream } = useCombinedStream(
