@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   useCombinedStream,
@@ -7,6 +7,7 @@ import {
   useSpeechDetection,
   useStream,
   useMediaStore,
+  useVAD,
 } from "@hooks";
 import { useDeviceActions, useDeviceStore } from "@stores";
 import { CameraSet, MicrophoneSet, SpeakerSet, VirtualBgSet } from "@components";
@@ -20,9 +21,9 @@ const defaultVideoConstraints = {
 };
 
 const defaultAudioConstraints = {
-  echoCancellation: true,
-  noiseSuppression: true,
-  autoGainControl: true,
+  echoCancellation: false,
+  noiseSuppression: false,
+  autoGainControl: false,
 };
 
 function DeviceTestPage() {
@@ -40,6 +41,10 @@ function DeviceTestPage() {
   const isVirtualBgOn = useDeviceStore((store) => store.isVirtualBgOn);
   const selectedVirtualBg = useDeviceStore((store) => store.selectedVirtualBg);
   const { setCams, setMics, setSpeakers, setCamError, setMicError, setVolume } = useDeviceActions();
+
+  const [echoCancellation, setEchoCancellation] = useState(false);
+  const [noiseSuppression, setNoiseSuppression] = useState(true);
+  const [autoGainControl, setAutoGainControl] = useState(false);
 
   useEffect(() => {
     setCams(cams);
@@ -82,10 +87,12 @@ function DeviceTestPage() {
     return {
       audio: {
         deviceId: selectedMicId ? { exact: selectedMicId } : undefined,
-        ...defaultAudioConstraints,
+        echoCancellation,
+        noiseSuppression,
+        autoGainControl,
       },
     };
-  }, [selectedMicId]);
+  }, [selectedMicId, echoCancellation, noiseSuppression, autoGainControl]);
 
   // 오디오 스트림
   const { stream: audioStream, error: audioStreamError } = useStream({
@@ -137,11 +144,21 @@ function DeviceTestPage() {
     )
   );
 
-  const { isTalk, volume } = useSpeechDetection(suppressedStream, threshold);
+  // 발화 여부 확인
+  const { isSpeech: isTalk } = useVAD(
+    useMemo(
+      () => ({
+        enabled: isMicOn,
+        audioStream: suppressedStream,
+      }),
+      [isMicOn, suppressedStream]
+    )
+  );
+  // const { isTalk, volume } = useSpeechDetection(suppressedStream, threshold);
 
-  useEffect(() => {
-    setVolume(volume);
-  }, [volume, setVolume]);
+  // useEffect(() => {
+  //   setVolume(volume);
+  // }, [volume, setVolume]);
 
   useEffect(() => {
     if (videoRef.current && finalStream && finalStream.active) {
@@ -164,6 +181,32 @@ function DeviceTestPage() {
           <MicrophoneSet />
           <SpeakerSet />
           <VirtualBgSet />
+          <div className="flex flex-col gap-[4px]">
+            <label className="flex items-center gap-[4px]">
+              <input
+                type="checkbox"
+                checked={echoCancellation}
+                onChange={() => setEchoCancellation(!echoCancellation)}
+              />
+              <span>echo cancellation</span>
+            </label>
+          </div>
+          <div className="flex flex-col gap-[4px]">
+            <label className="flex items-center gap-[4px]">
+              <input
+                type="checkbox"
+                checked={noiseSuppression}
+                onChange={() => setNoiseSuppression(!noiseSuppression)}
+              />
+              <span>noise suppression</span>
+            </label>
+          </div>
+          <div className="flex flex-col gap-[4px]">
+            <label className="flex items-center gap-[4px]">
+              <input type="checkbox" checked={autoGainControl} onChange={() => setAutoGainControl(!autoGainControl)} />
+              <span>auto gain control</span>
+            </label>
+          </div>
         </div>
       </div>
     </div>
